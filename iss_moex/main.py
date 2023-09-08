@@ -20,8 +20,8 @@ def get_json_data(method: str, **kwargs):
         if kwargs:
             url += "?" + parse.urlencode(kwargs)
         response = requests.get(url)
-        json_data = response.json()
-        return json_data
+        json_obj = response.json()
+        return json_obj
 
     except requests.exceptions.ConnectionError as e:
         print("Connection error: %s" % str(e))
@@ -40,30 +40,31 @@ def get_json_data(method: str, **kwargs):
         return None
 
 
-def convert_to_two_dimensional_array(json_data, blockname):
+def convert_to_two_dimensional_array(json_obj, blockname):
     """
     Transforms json object to two-dimensional array
 
-    :param json_data: json object from Moscow Exchange
+    :param json_obj: json object from Moscow Exchange
     :param blockname: ISS Queries
     read more at https://iss.moex.com/iss/reference/
     :return: list of dicts with all info about securities
     """
-    json_data = get_json_data(blockname)
-    if json_data and blockname in json_data:
+    if json_obj and blockname in json_obj:
         list_of_dicts_securities = [
-            {column: row[index] for index, column in enumerate(json_data[blockname]["columns"])}
-            for row in json_data[blockname]["data"]
+            {column: row[index] for index, column in enumerate(json_obj[blockname]["columns"])}
+            for row in json_obj[blockname]["data"]
         ]
         # in the future it maybe necessary to use 'yield'
         return list_of_dicts_securities
 
 
-
 if __name__ == "__main__":
     # List of securities traded on the Moscow stock exchange
-    # https://iss.moex.com/iss/reference/5
-    json_data = get_json_data("securities")
+    # params for method "securities" at https://iss.moex.com/iss/reference/5
+    # json_data = get_json_data("securities")
+    # json_data = get_json_data("securities", q="AAPL")
+    # json_data = get_json_data("securities", group_by="type", group_by_filter="corporate_bond", limit=10)
+    json_data = get_json_data("securities", q="втб", group_by="type", group_by_filter="corporate_bond", limit=10)
     f = convert_to_two_dimensional_array(json_data, "securities")
 
     print(f)
