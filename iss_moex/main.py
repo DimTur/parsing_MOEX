@@ -70,12 +70,21 @@ if __name__ == "__main__":
     # json_data = get_json_data(method, q="втб", group_by="type", group_by_filter="corporate_bond", limit=10)
     # f = convert_to_two_dimensional_array(json_data, "securities")
 
+    # Get tool specification
+    # https://iss.moex.com/iss/reference/13
+    # secid = "RU000A1032P1"
+    # method = "securities/%s" % secid
+    # json_data = get_json_data(method)
+    # f = convert_to_two_dimensional_array(json_data, "description")
 
-    #Get tool specification
-    #https://iss.moex.com/iss/reference/13
-    secid = "RU000A1032P1"
-    method = "securities/%s" % secid
-    json_data = get_json_data(method)
-    f = convert_to_two_dimensional_array(json_data, "description")
+    # https://iss.moex.com/iss/reference/823
+    engine = "stock"
+    market = "shares"
+    tradingsession = 3
+    securities = "SBER,TTLK"  # we need to indicate like that, because this is requires of Moscow stock exchange
+    method = f"/engines/{engine}/markets/{market}/secstats/"
+    json_data = get_json_data(method, tradingsession=1, securities=securities)
+    f = convert_to_two_dimensional_array(json_data, "secstats")
 
     print(pd.DataFrame(f))
+    # print(json_data)
