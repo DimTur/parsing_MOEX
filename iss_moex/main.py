@@ -1,8 +1,10 @@
+import pandas as pd
+pd.set_option("display.max_columns", 15)
+
 import json
 import requests
 
 from urllib import parse
-from sysconfig import get_path
 
 
 def get_json_data(method: str, **kwargs):
@@ -61,10 +63,19 @@ def convert_to_two_dimensional_array(json_obj, blockname):
 if __name__ == "__main__":
     # List of securities traded on the Moscow stock exchange
     # params for method "securities" at https://iss.moex.com/iss/reference/5
-    # json_data = get_json_data("securities")
-    # json_data = get_json_data("securities", q="AAPL")
-    # json_data = get_json_data("securities", group_by="type", group_by_filter="corporate_bond", limit=10)
-    json_data = get_json_data("securities", q="втб", group_by="type", group_by_filter="corporate_bond", limit=10)
-    f = convert_to_two_dimensional_array(json_data, "securities")
+    # method = "securities"
+    # json_data = get_json_data(method)
+    # json_data = get_json_data(method, q="AAPL")
+    # json_data = get_json_data(method, group_by="type", group_by_filter="corporate_bond", limit=10)
+    # json_data = get_json_data(method, q="втб", group_by="type", group_by_filter="corporate_bond", limit=10)
+    # f = convert_to_two_dimensional_array(json_data, "securities")
 
-    print(f)
+
+    #Get tool specification
+    #https://iss.moex.com/iss/reference/13
+    secid = "RU000A1032P1"
+    method = "securities/%s" % secid
+    json_data = get_json_data(method)
+    f = convert_to_two_dimensional_array(json_data, "description")
+
+    print(pd.DataFrame(f))
