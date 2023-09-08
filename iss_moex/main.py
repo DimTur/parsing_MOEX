@@ -10,8 +10,9 @@ def get_json_data(method: str, **kwargs):
     Sens a requests to ISS MOEX and return json object
     with list of securities traded on the Moscow Exchange
 
-    :param method:
-    :param kwargs:
+    :param method: a string representing the API method to be called
+    :param kwargs: additional keyword arguments to include in the request
+    read more at https://iss.moex.com/iss/reference/
     :return: json object
     """
     try:
@@ -39,20 +40,30 @@ def get_json_data(method: str, **kwargs):
         return None
 
 
-def convert_to_two_demensional_array(json_data, blockname):
+def convert_to_two_dimensional_array(json_data, blockname):
+    """
+    Transforms json object to two-dimensional array
+
+    :param json_data: json object from Moscow Exchange
+    :param blockname: ISS Queries
+    read more at https://iss.moex.com/iss/reference/
+    :return: list of dicts with all info about securities
+    """
     json_data = get_json_data(blockname)
     if json_data and blockname in json_data:
-        columns = json_data[blockname]["columns"]
-        for row in json_data[blockname]["data"]:
-            dict_securities = {column: value for column, value in zip(columns, row)}
-            # в будущем, возможно, имеет смысл применить yield
-            return dict_securities
+        list_of_dicts_securities = [
+            {column: row[index] for index, column in enumerate(json_data[blockname]["columns"])}
+            for row in json_data[blockname]["data"]
+        ]
+        # in the future it maybe necessary to use 'yield'
+        return list_of_dicts_securities
+
 
 
 if __name__ == "__main__":
-    # Список бумаг торгуемых на московской бирже
+    # List of securities traded on the Moscow stock exchange
     # https://iss.moex.com/iss/reference/5
     json_data = get_json_data("securities")
-    f = convert_to_two_demensional_array(json_data, "securities")
+    f = convert_to_two_dimensional_array(json_data, "securities")
 
     print(f)
