@@ -5,7 +5,7 @@ from urllib import parse
 from sysconfig import get_path
 
 
-def get_query(method: str, **kwargs):
+def get_json_data(method: str, **kwargs):
     """
     Sens a requests to ISS MOEX and return json object
     with list of securities traded on the Moscow Exchange
@@ -40,33 +40,19 @@ def get_query(method: str, **kwargs):
 
 
 def convert_to_two_demensional_array(json_data, blockname):
-    json_data = get_query(blockname)
+    json_data = get_json_data(blockname)
     if json_data and blockname in json_data:
-        dict_securities = [{column: row[index] for index, column in enumerate(json_data[blockname]["columns"])} for row in json_data[blockname]["data"]]
-        return dict_securities
-
-        # for colum_name, data in enumerate(json_data[blockname]["columns"])
-
-
-# def get_securities():
-#     json_data = get_query("securities")
-#     if json_data and "securities" in json_data:
-#         for security in json_data["securities"]["data"]:
-#             yield security
+        columns = json_data[blockname]["columns"]
+        for row in json_data[blockname]["data"]:
+            dict_securities = {column: value for column, value in zip(columns, row)}
+            # в будущем, возможно, имеет смысл применить yield
+            return dict_securities
 
 
 if __name__ == "__main__":
     # Список бумаг торгуемых на московской бирже
     # https://iss.moex.com/iss/reference/5
-    json_data = get_query("securities")
+    json_data = get_json_data("securities")
     f = convert_to_two_demensional_array(json_data, "securities")
 
     print(f)
-
-    # print(json.dumps(json_data, ensure_ascii=False, indent=4, sort_keys=True))
-
-    # securities_generator = convert_to_two_demensional_array()
-    #
-    # # Вывод данных о бумагах
-    # for security in securities_generator:
-    #     print(security)
