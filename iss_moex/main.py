@@ -1,5 +1,5 @@
 import pandas as pd
-pd.set_option("display.max_columns", 15)
+pd.set_option("display.max_columns", 27)
 
 import json
 import requests
@@ -61,6 +61,8 @@ def convert_to_two_dimensional_array(json_obj, blockname):
 
 
 def get_shares(page=1, limit=10):
+    # List of securities traded on the Moscow stock exchange
+    # params for method "securities" at https://iss.moex.com/iss/reference/5
     json_obj = get_json_data(
         "securities",
         group_by="group",
@@ -75,11 +77,29 @@ def get_shares(page=1, limit=10):
     return list_of_dicts
 
 
+def get_shares_by_board_id(iss_only):
+    # get a table of shares by board
+    # https://iss.moex.com/iss/reference/32
+    engine = "stock"
+    market = "shares"
+    boardid = "TQBR"
+    method = f"/engines/{engine}/markets/{market}/boards/{boardid}/securities/"
+    json_obj = get_json_data(
+        method=method,
+        iss_only=iss_only,
+    )
+    list_of_dicts = convert_to_two_dimensional_array(
+        json_obj,
+        "marketdata"
+    )
+    return list_of_dicts
+
+
 if __name__ == "__main__":
-    # List of securities traded on the Moscow stock exchange
-    # # params for method "securities" at https://iss.moex.com/iss/reference/5
-    f = get_shares()
+    # f = get_shares()
+    f = get_shares_by_board_id("iss.only=marketdata")
     print(pd.DataFrame(f))
+
 
     # Get tool specification
     # https://iss.moex.com/iss/reference/13
