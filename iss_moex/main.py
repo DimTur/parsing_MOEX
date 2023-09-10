@@ -43,9 +43,9 @@ def get_json_data(method: str, **kwargs):
         return None
 
 
-def convert_to_two_dimensional_array(json_obj, blockname):
+def convert_to_dict(json_obj, blockname):
     """
-    Transforms json object to two-dimensional array
+    Transforms json object to dict
 
     :param json_obj: json object from Moscow Exchange
     :param blockname: ISS Queries
@@ -71,7 +71,7 @@ def get_shares(page=1, limit=10):
         limit=limit,
         start=((page-1) * limit),
     )
-    list_of_dicts = convert_to_two_dimensional_array(
+    list_of_dicts = convert_to_dict(
         json_obj,
         "securities",
     )
@@ -89,7 +89,7 @@ def get_shares_by_board_id():
         method=method,
         iss_only="iss.only=marketdata",
     )
-    list_of_dicts = convert_to_two_dimensional_array(
+    list_of_dicts = convert_to_dict(
         json_obj,
         "marketdata"
     )
@@ -116,7 +116,7 @@ def get_last_price_and_valtoday(secid: str):
         method=method,
         iss_only="iss.only=marketdata",
     )
-    dict_with_new_price_and_valtoday = convert_to_two_dimensional_array(
+    dict_with_new_price_and_valtoday = convert_to_dict(
         json_obj,
         "marketdata"
     )
