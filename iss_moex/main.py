@@ -1,5 +1,5 @@
 import pandas as pd
-pd.set_option("display.max_columns", 27)
+pd.set_option("display.max_columns", 55)
 
 import json
 import requests
