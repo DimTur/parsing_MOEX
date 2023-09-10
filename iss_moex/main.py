@@ -24,6 +24,7 @@ def get_json_data(method: str, **kwargs):
             url += "?" + parse.urlencode(kwargs)
         response = requests.get(url)
         json_obj = response.json()
+
         return json_obj
 
     except requests.exceptions.ConnectionError as e:
@@ -43,19 +44,19 @@ def get_json_data(method: str, **kwargs):
         return None
 
 
-def convert_to_dict(json_obj, blockname):
+def convert_to_dict(json_obj: json, block_name: str):
     """
     Transforms json object to dict
 
     :param json_obj: json object from Moscow Exchange
-    :param blockname: ISS Queries
+    :param block_name: ISS Queries
     read more at https://iss.moex.com/iss/reference/
     :return: list of dicts with all info about securities
     """
-    if json_obj and blockname in json_obj:
+    if json_obj and block_name in json_obj:
         list_of_dicts_securities = [
-            {str.lower(column): row[index] for index, column in enumerate(json_obj[blockname]["columns"])}
-            for row in json_obj[blockname]["data"]
+            {str.lower(column): row[index] for index, column in enumerate(json_obj[block_name]["columns"])}
+            for row in json_obj[block_name]["data"]
         ]
         # in the future it maybe necessary to use 'yield'
         return list_of_dicts_securities
@@ -71,10 +72,12 @@ def get_shares(page=1, limit=10):
         limit=limit,
         start=((page-1) * limit),
     )
+
     list_of_dicts = convert_to_dict(
         json_obj,
         "securities",
     )
+
     return list_of_dicts
 
 
@@ -93,6 +96,7 @@ def get_shares_by_board_id():
         json_obj,
         "marketdata"
     )
+
     new_list_of_dicts = []
     for d in list_of_dicts:
         current_datetime = datetime.now()
@@ -104,6 +108,7 @@ def get_shares_by_board_id():
             "date_time": formatted_datetime,
         }
         new_list_of_dicts.append(new_dict)
+
     return new_list_of_dicts
 
 
@@ -116,10 +121,12 @@ def get_last_price_and_valtoday(secid: str):
         method=method,
         iss_only="iss.only=marketdata",
     )
+
     dict_with_new_price_and_valtoday = convert_to_dict(
         json_obj,
         "marketdata"
     )
+
     return {
         "last": dict_with_new_price_and_valtoday[0]["last"],
         "valtoday": dict_with_new_price_and_valtoday[0]["valtoday"]
