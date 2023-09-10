@@ -60,15 +60,26 @@ def convert_to_two_dimensional_array(json_obj, blockname):
         return list_of_dicts_securities
 
 
+def get_shares(page=1, limit=10):
+    json_obj = get_json_data(
+        "securities",
+        group_by="group",
+        group_by_filter="stock_shares",
+        limit=limit,
+        start=((page-1) * limit),
+    )
+    list_of_dicts = convert_to_two_dimensional_array(
+        json_obj,
+        "securities",
+    )
+    return list_of_dicts
+
+
 if __name__ == "__main__":
     # List of securities traded on the Moscow stock exchange
-    # params for method "securities" at https://iss.moex.com/iss/reference/5
-    # method = "securities"
-    # json_data = get_json_data(method)
-    # json_data = get_json_data(method, q="AAPL")
-    # json_data = get_json_data(method, group_by="type", group_by_filter="corporate_bond", limit=10)
-    # json_data = get_json_data(method, q="втб", group_by="type", group_by_filter="corporate_bond", limit=10)
-    # f = convert_to_two_dimensional_array(json_data, "securities")
+    # # params for method "securities" at https://iss.moex.com/iss/reference/5
+    f = get_shares()
+    print(pd.DataFrame(f))
 
     # Get tool specification
     # https://iss.moex.com/iss/reference/13
@@ -77,16 +88,29 @@ if __name__ == "__main__":
     # json_data = get_json_data(method)
     # f = convert_to_two_dimensional_array(json_data, "description")
 
+    # get volume today in last session
     # https://iss.moex.com/iss/reference/823
-    engine = "stock"
-    market = "shares"
-    tradingsession = 3
-    securities = "SBER,TTLK"  # we need to indicate like that, because this is requires of Moscow stock exchange
-    method = f"/engines/{engine}/markets/{market}/secstats/"
-    json_data = get_json_data(method, tradingsession=1, securities=securities)
-    f = convert_to_two_dimensional_array(json_data, "secstats")
-
-    print(pd.DataFrame(f))
+    # engine = "stock"
+    # market = "shares"
+    # tradingsession = 3
+    # boardid = "TQBR"
+    # securities = "SBER,TTLK"  # we need to indicate like that, because this is requires of Moscow stock exchange
+    # method = f"/engines/{engine}/markets/{market}/secstats/"
+    # json_data = get_json_data(method, tradingsession=tradingsession, securities=securities, boardid=boardid)
+    # f = convert_to_two_dimensional_array(json_data, "secstats")
+    #
+    # print(pd.DataFrame(f))
     # print(json_data)
 
-    # https://iss.moex.com/iss/reference/813
+    # Get data on the specified instrument on the selected trading mode
+    # https://iss.moex.com/iss/reference/53
+    # engine = "stock"
+    # market = "shares"
+    # boardid = "TQBR"
+    # secid = "SBER"
+    # method = f"/engines/{engine}/markets/{market}/boards/{boardid}/securities/{secid}"
+    # json_data = get_json_data(method)
+    # list_1 = convert_to_two_dimensional_array(json_data, "securities")
+    #
+    # print(pd.DataFrame(list_1))
+    # print(json_data)
