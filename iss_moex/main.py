@@ -5,6 +5,7 @@ import json
 import requests
 
 from urllib import parse
+from datetime import datetime
 
 
 def get_json_data(method: str, **kwargs):
@@ -92,7 +93,18 @@ def get_shares_by_board_id():
         json_obj,
         "marketdata"
     )
-    return list_of_dicts
+    new_list_of_dicts = []
+    for d in list_of_dicts:
+        current_datetime = datetime.now()
+        formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        new_dict = {
+            "secid": d["secid"],
+            "last": d["last"],
+            "valtoday": d["valtoday"],
+            "date_time": formatted_datetime,
+        }
+        new_list_of_dicts.append(new_dict)
+    return new_list_of_dicts
 
 
 def get_last_price_and_valtoday(secid: str):
@@ -116,7 +128,7 @@ def get_last_price_and_valtoday(secid: str):
 
 if __name__ == "__main__":
     # f = get_shares()
-    # f = get_shares_by_board_id()
-    f = get_last_price_and_valtoday("SBER")
-    print(f)
-    # print(pd.DataFrame(f))
+    f = get_shares_by_board_id()
+    # f = get_last_price_and_valtoday("SBER")
+    # print(f)
+    print(pd.DataFrame(f))

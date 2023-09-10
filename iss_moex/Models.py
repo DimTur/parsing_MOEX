@@ -12,7 +12,7 @@ class Share(Base):
     id: Mapped[int] = mapped_column(primery_key=True)
     secid: Mapped[str] = mapped_column(String())  # share indicate
     last: Mapped[float] = mapped_column(Float)  # share's last price
-    systime: Mapped[str] = mapped_column(DateTime())  # current date and time await self.userdb.update_user(request, vk_id, {'time_to_go': datetime.datetime.now()}
+    systime: Mapped[str] = mapped_column(DateTime())  # current date and time (maybe rewrite to "date_time")
     valtoday: Mapped[str] = mapped_column(Float())  # current volume in rub
 
     def __repr__(self) -> str:
