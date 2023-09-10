@@ -1,4 +1,5 @@
 import pandas as pd
+
 pd.set_option("display.max_columns", 55)
 
 import json
@@ -70,7 +71,7 @@ def get_shares(page=1, limit=10):
         group_by="group",
         group_by_filter="stock_shares",
         limit=limit,
-        start=((page-1) * limit),
+        start=((page - 1) * limit),
     )
 
     list_of_dicts = convert_to_dict(
@@ -92,7 +93,7 @@ def get_shares_by_board_id():
         method=method,
         iss_only="iss.only=marketdata",
     )
-    
+
     list_of_dicts = convert_to_dict(
         json_obj,
         "marketdata"
