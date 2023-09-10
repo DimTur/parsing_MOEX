@@ -53,7 +53,7 @@ def convert_to_two_dimensional_array(json_obj, blockname):
     """
     if json_obj and blockname in json_obj:
         list_of_dicts_securities = [
-            {column: row[index] for index, column in enumerate(json_obj[blockname]["columns"])}
+            {str.lower(column): row[index] for index, column in enumerate(json_obj[blockname]["columns"])}
             for row in json_obj[blockname]["data"]
         ]
         # in the future it maybe necessary to use 'yield'
@@ -77,7 +77,7 @@ def get_shares(page=1, limit=10):
     return list_of_dicts
 
 
-def get_shares_by_board_id(iss_only):
+def get_shares_by_board_id():
     # get a table of shares by board
     # https://iss.moex.com/iss/reference/32
     engine = "stock"
@@ -86,7 +86,7 @@ def get_shares_by_board_id(iss_only):
     method = f"/engines/{engine}/markets/{market}/boards/{boardid}/securities/"
     json_obj = get_json_data(
         method=method,
-        iss_only=iss_only,
+        iss_only="iss.only=marketdata",
     )
     list_of_dicts = convert_to_two_dimensional_array(
         json_obj,
@@ -97,40 +97,5 @@ def get_shares_by_board_id(iss_only):
 
 if __name__ == "__main__":
     # f = get_shares()
-    f = get_shares_by_board_id("iss.only=marketdata")
+    f = get_shares_by_board_id()
     print(pd.DataFrame(f))
-
-
-    # Get tool specification
-    # https://iss.moex.com/iss/reference/13
-    # secid = "RU000A1032P1"
-    # method = "securities/%s" % secid
-    # json_data = get_json_data(method)
-    # f = convert_to_two_dimensional_array(json_data, "description")
-
-    # get volume today in last session
-    # https://iss.moex.com/iss/reference/823
-    # engine = "stock"
-    # market = "shares"
-    # tradingsession = 3
-    # boardid = "TQBR"
-    # securities = "SBER,TTLK"  # we need to indicate like that, because this is requires of Moscow stock exchange
-    # method = f"/engines/{engine}/markets/{market}/secstats/"
-    # json_data = get_json_data(method, tradingsession=tradingsession, securities=securities, boardid=boardid)
-    # f = convert_to_two_dimensional_array(json_data, "secstats")
-    #
-    # print(pd.DataFrame(f))
-    # print(json_data)
-
-    # Get data on the specified instrument on the selected trading mode
-    # https://iss.moex.com/iss/reference/53
-    # engine = "stock"
-    # market = "shares"
-    # boardid = "TQBR"
-    # secid = "SBER"
-    # method = f"/engines/{engine}/markets/{market}/boards/{boardid}/securities/{secid}"
-    # json_data = get_json_data(method)
-    # list_1 = convert_to_two_dimensional_array(json_data, "securities")
-    #
-    # print(pd.DataFrame(list_1))
-    # print(json_data)
