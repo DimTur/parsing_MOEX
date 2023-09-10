@@ -92,6 +92,7 @@ def get_shares_by_board_id():
         method=method,
         iss_only="iss.only=marketdata",
     )
+    
     list_of_dicts = convert_to_dict(
         json_obj,
         "marketdata"
