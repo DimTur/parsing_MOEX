@@ -95,7 +95,28 @@ def get_shares_by_board_id():
     return list_of_dicts
 
 
+def get_last_price_and_valtoday(secid: str):
+    engine = "stock"
+    market = "shares"
+    boardid = "TQBR"
+    method = f"/engines/{engine}/markets/{market}/boards/{boardid}/securities/{secid}/"
+    json_obj = get_json_data(
+        method=method,
+        iss_only="iss.only=marketdata",
+    )
+    dict_with_new_price_and_valtoday = convert_to_two_dimensional_array(
+        json_obj,
+        "marketdata"
+    )
+    return {
+        "last": dict_with_new_price_and_valtoday[0]["last"],
+        "valtoday": dict_with_new_price_and_valtoday[0]["valtoday"]
+    }
+
+
 if __name__ == "__main__":
     # f = get_shares()
-    f = get_shares_by_board_id()
-    print(pd.DataFrame(f))
+    # f = get_shares_by_board_id()
+    f = get_last_price_and_valtoday("SBER")
+    print(f)
+    # print(pd.DataFrame(f))
