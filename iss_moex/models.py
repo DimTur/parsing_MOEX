@@ -1,4 +1,4 @@
-from sqlalchemy import String, Float, DateTime
+from sqlalchemy import String, Float, DateTime, Integer
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
 class Share(Base):
     __tablename__ = "shares"
 
-    id: Mapped[int] = mapped_column(primery_key=True)
+    id: Mapped[int] = mapped_column(Integer, primery_key=True, autoincrement=True)
     secid: Mapped[str] = mapped_column(String())  # share indicate
     last: Mapped[float] = mapped_column(Float)  # share's last price
     systime: Mapped[str] = mapped_column(DateTime())  # current date and time (maybe rewrite to "date_time")
