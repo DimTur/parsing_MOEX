@@ -12,7 +12,3 @@ def post_to_db():
             new_share = Share(**json_data)
             session.add(new_share)
             session.commit()
-
-
-if __name__ == "__main__":
-    post_to_db()
