@@ -1,16 +1,13 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.engine import URL
+import atexit
+
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
-url = URL.create(
-    drivername="postgresql",
-    username="postgres",
-    password="postgres",
-    port="localhost",
-    host="5432",
-    database="iss_moex",
-)
+PG_DSN = "postgresql://user:1234@127.0.0.1:5432/moex_shares_db"
 
-engine = create_async_engine(url)
+engine = create_engine(PG_DSN)
 Session = sessionmaker(bind=engine)
+
+atexit.register(engine.dispose)
+

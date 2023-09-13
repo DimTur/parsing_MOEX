@@ -1,6 +1,6 @@
-import pandas as pd
-
-pd.set_option("display.max_columns", 55)
+# import pandas as pd
+#
+# pd.set_option("display.max_columns", 55)
 
 import json
 import requests
@@ -23,8 +23,7 @@ def get_json_data(method: str, **kwargs):
         url = "https://iss.moex.com/iss/%s.json" % method
         if kwargs:
             url += "?" + parse.urlencode(kwargs)
-        response = requests.get(url)
-        json_obj = response.json()
+        json_obj = requests.get(url).json()
 
         return json_obj
 
@@ -63,23 +62,23 @@ def convert_to_dict(json_obj: json, block_name: str):
         return list_of_dicts_securities
 
 
-def get_shares(page=1, limit=10):
-    # List of securities traded on the Moscow stock exchange
-    # params for method "securities" at https://iss.moex.com/iss/reference/5
-    json_obj = get_json_data(
-        "securities",
-        group_by="group",
-        group_by_filter="stock_shares",
-        limit=limit,
-        start=((page - 1) * limit),
-    )
-
-    list_of_dicts = convert_to_dict(
-        json_obj,
-        "securities",
-    )
-
-    return list_of_dicts
+# def get_shares(page=1, limit=10):
+#     # List of securities traded on the Moscow stock exchange
+#     # params for method "securities" at https://iss.moex.com/iss/reference/5
+#     json_obj = get_json_data(
+#         "securities",
+#         group_by="group",
+#         group_by_filter="stock_shares",
+#         limit=limit,
+#         start=((page - 1) * limit),
+#     )
+#
+#     list_of_dicts = convert_to_dict(
+#         json_obj,
+#         "securities",
+#     )
+#
+#     return list_of_dicts
 
 
 def get_shares_by_board_id():
@@ -107,37 +106,38 @@ def get_shares_by_board_id():
             "secid": d["secid"],
             "last": d["last"],
             "valtoday": d["valtoday"],
-            "date_time": formatted_datetime,
+            "systime": formatted_datetime,
         }
         new_list_of_dicts.append(new_dict)
 
     return new_list_of_dicts
 
 
-def get_last_price_and_valtoday(secid: str):
-    engine = "stock"
-    market = "shares"
-    boardid = "TQBR"
-    method = f"/engines/{engine}/markets/{market}/boards/{boardid}/securities/{secid}/"
-    json_obj = get_json_data(
-        method=method,
-        iss_only="iss.only=marketdata",
-    )
+# def get_last_price_and_valtoday(secid: str):
+#     engine = "stock"
+#     market = "shares"
+#     boardid = "TQBR"
+#     method = f"/engines/{engine}/markets/{market}/boards/{boardid}/securities/{secid}/"
+#     json_obj = get_json_data(
+#         method=method,
+#         iss_only="iss.only=marketdata",
+#     )
+#
+#     dict_with_new_price_and_valtoday = convert_to_dict(
+#         json_obj,
+#         "marketdata"
+#     )
+#
+#     return {
+#         "last": dict_with_new_price_and_valtoday[0]["last"],
+#         "valtoday": dict_with_new_price_and_valtoday[0]["valtoday"]
+#     }
 
-    dict_with_new_price_and_valtoday = convert_to_dict(
-        json_obj,
-        "marketdata"
-    )
 
-    return {
-        "last": dict_with_new_price_and_valtoday[0]["last"],
-        "valtoday": dict_with_new_price_and_valtoday[0]["valtoday"]
-    }
-
-
-if __name__ == "__main__":
-    # f = get_shares()
-    f = get_shares_by_board_id()
-    # f = get_last_price_and_valtoday("SBER")
-    # print(f)
-    print(pd.DataFrame(f))
+# if __name__ == "__main__":
+#     # f = get_shares()
+#     f = get_shares_by_board_id()
+#     # f = get_last_price_and_valtoday("SBER")
+#     print(f)
+#     print(type(f[0]["last"]))
+#     # print(pd.DataFrame(f))
