@@ -1,4 +1,4 @@
-## This scrip get information from apu iis moex
+## This script get information from api iis moex
 
 For more information you can visit https://iss.moex.com/iss/reference/32
 
